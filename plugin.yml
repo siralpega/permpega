@@ -1,0 +1,14 @@
+name: PermPega
+main: com.github.siralpega.PermPega.PermPegaMain
+version: 1
+api-version: 1.15
+description: Permissions
+softdepend: [Vault]
+author: Alpega_
+commands:
+    permpega:
+      description: Manage Permissions
+      aliases: [pp, perm, perms, p]
+      usage: /permpega
+      permission: permpega.base
+      permission-message: §cYou don't have access to that command
