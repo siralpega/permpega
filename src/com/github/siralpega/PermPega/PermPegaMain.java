@@ -26,15 +26,6 @@ import net.md_5.bungee.api.ChatColor;
 
 public class PermPegaMain extends JavaPlugin implements CommandExecutor, Listener
 {
-	//https://bukkit.gamepedia.com/Developing_a_permissions_plugin
-
-	//TODO: Add Vault support (so other plugins can access perms)
-	//TODO: Async for I/O operations (if you get all groups and their permissions in a List onEnable, won't have to for setperms. You will for adding and getting, so Callbacks? )
-	//TODO: setup auto-complete on ALL commands that player has permission (instead of unknown command here)  (might be a trick on forums)
-	//TODO: bug w/ auto-complete. /pp rem would also add help to list
-
-	//If I clean this up, make it nice, I can actually release it on spigot. Could be useful for showcase/portfolio. Need vault support then proab, but not a depend.
-
 	private File playersFile;
 	private YamlConfiguration playersConfig;
 	private Map <String, Group> groupData;
@@ -49,7 +40,7 @@ public class PermPegaMain extends JavaPlugin implements CommandExecutor, Listene
 		//Commands
 		getCommand("permpega");
 		getCommand("permpega").setTabCompleter(new CmdTabComplete(this));
-		//set aliases in plugin.yml under the command
+	
 		//Listeners
 		getServer().getPluginManager().registerEvents(this, this);
 
@@ -60,8 +51,7 @@ public class PermPegaMain extends JavaPlugin implements CommandExecutor, Listene
 		groupData = new HashMap<String, Group>();
 		playerAttachments = new HashMap<UUID, PermissionAttachment>();
 		setupGroups();
-		//TODO: maybe make this as a task? 
-		//for reloads mostly:
+		//TODO: maybe this a task (runnable) for speed up forced reloads
 		for(Player p : Bukkit.getOnlinePlayers())
 		{
 			playerAttachments.put(p.getUniqueId(), p.addAttachment(this));
@@ -86,7 +76,6 @@ public class PermPegaMain extends JavaPlugin implements CommandExecutor, Listene
 					this.getConfig().getStringList("groups." + group + ".inherits").toArray(new String[0]), 
 					this.getConfig().getInt("groups." + group + ".priority"), this.getConfig().getString("groups." + group + ".prefix"),
 					this.getConfig().getString("groups." + group + ".suffix")));
-		//		groupData.put(group, this.getConfig().getStringList("groups." + group + ".permissions").toArray(new String[0]));
 	}
 
 	@SuppressWarnings("deprecation")
@@ -194,7 +183,7 @@ public class PermPegaMain extends JavaPlugin implements CommandExecutor, Listene
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event)
 	{
-		//TODO: for default: if getPlayerGroups is null of length == 0, then don't add attachment or set permissions? or maybe you have too. test w/ /help and see if u can do anything.
+		//TODO: for default: if getPlayerGroups is null or length == 0, then don't add attachment or set permissions.
 		playerAttachments.put(event.getPlayer().getUniqueId(), event.getPlayer().addAttachment(this));
 		setPlayerPermissions(event.getPlayer());
 	}
